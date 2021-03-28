@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>SQL优化 | SayMe</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="MySQL本地路径&#x2F;data&#x2F;mysql    索引文件就是func.MYI MySql子查询  exists   select bo.*From boys bowhere NOT exists (    select boyfriend_id    from beauty b    where bo.id &#x3D; b.boyfriend_id};     select 查询列表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SQL优化">
+<meta property="og:url" content="http://example.com/2021/03/28/SQL%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="SayMe">
+<meta property="og:description" content="MySQL本地路径&#x2F;data&#x2F;mysql    索引文件就是func.MYI MySql子查询  exists   select bo.*From boys bowhere NOT exists (    select boyfriend_id    from beauty b    where bo.id &#x3D; b.boyfriend_id};     select 查询列表">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-28T03:16:08.000Z">
+<meta property="article:modified_time" content="2021-03-28T03:16:34.649Z">
+<meta property="article:author" content="SayMe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="SayMe" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">SayMe</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-SQL优化" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2021/03/28/SQL%E4%BC%98%E5%8C%96/" class="article-date">
+  <time datetime="2021-03-28T03:16:08.000Z" itemprop="datePublished">2021-03-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SQL优化
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>MySQL本地路径/data/mysql<br>    索引文件就是func.MYI</p>
+<p>MySql子查询  exists  </p>
+<p>select bo.*<br>From boys bo<br>where NOT exists (<br>    select boyfriend_id<br>    from beauty b<br>    where bo.id = b.boyfriend_id<br>};    </p>
+<p>select 查询列表            7           执行顺序<br>from 表                1<br>连接类型 join 表2        2<br>on   连接条件            3<br>where  筛选条件            4<br>group by  分组列表        5<br>having  分组后的筛选        6<br>order by  排序列表        8<br>limit 偏移,条目数        9</p>
+<p>优化第一条<br>1.全职匹配我最爱<br>2.最佳左前缀法则   联合索引要连续<br>3.不在索引上做任何操作(计算 函数(自动or手动)类型转换),会导致索引失效而转向全表扫描<br>4.存储引擎不能使用索引中范围条件右边的列<br>    建一个索引 三行的  第二行使用了范围匹配 那么最后那个就用不上了</p>
+<p>5.尽量使用覆盖索引(只访问索引的查询(索引列和查询列一致)),减少select *<br>6.mysql在使用不等于(!=或者&lt;&gt;)的时候无法使用索引会导致全表扫描<br>7.is null,is not null也无法使用索引<br>8.like 以通配符开头(‘%abc…’)mysql索引失效会变成全表扫描的操作</p>
+<p>9.字符串不加单引号索引失效<br>   结合第三条 不要进行类型转换<br>10.少用 or 用它连接时会索引失效</p>
+<p>定值 范围还是排序,一般order by 是给个范围<br>group by基本上都需要进行排序,会有临时表产生</p>
+<p>一般性建议:<br>    对于 单键索引,尽量选择针对当前query过滤性更好的索引<br>    在选择组合索引的时候,当前query中过滤性最好的字段在索引字段顺序中,位置越靠前越好<br>    在选择组合索引的时候,尽量选择可以能够包含当前query中的where字句中更多字段的索引<br>    尽可能通过分析统计信息和调整query的写法来达到选择合适索引的目的</p>
+<p>SQL支持两种方式的排序,FileSort和Index,Index效率高,<br>指MySQL扫描索引本身完成排序.FileSort方式效率较低<br>    Order by满足两种情况会使用Index方式排序:<br>        Order by语句使用索引最左前列<br>        使用where字句与Order by字句条件排列组合满足索引最左前列</p>
+<p>双路排序:<br>    MySQL4.1 之前是使用双路排序,字面意思就是二次扫描磁盘,最终得到数据,<br>读取行指针和orderby列,对他们进行排序,然后扫描已经排序好的列表,按照列表中的值重新从列表中读取对应的数据输出<br>从磁盘读取排序字段,在buffer进行排序,再从磁盘取其他字段</p>
+<p>取一批数据,要对磁盘进行了两次扫描,众所周知,I\O是很耗时的,所以在mysql4.1之后,出现了第二种改进的算法,就是单路排序<br>单路排序:<br>    从磁盘读取查询需要的所有列,按照order by列在buffer对它们进行排序,然后扫描排序后的列表进行输出,它的效率更快一些,<br>避免了第二次读取数据.并且把随机IO变成了顺序IO,但是它会使用更多的空间.</p>
+<p>结论及引申出的问题:<br>    由于单路是后出的,总体而言好过双路<br>    但是单路有问题<br>        在sort_buffer,方法B比方法A要占用很多空间,因为方法B是把所有字段都取出,所以有可能取出的数据的总大小<br>    超出了sort_buffer 的容量,导致每次只能取sort_buffer容量大小的数据,进行排序(创建tmp文件,多路合并),排完再取<br>    sort_buffer容量大小,再排……从而多次IO.</p>
+<pre><code>本来想省一次I\O操作,反而导致了大量的I\O操作反而得不偿失.</code></pre>
+<p>提高Order By的速度<br>    1.Order by时select * 是一个大忌只query需要的字段,这点非常重要.在这里的影响是:<br>        1.1 当Query的字段大小总和小于max_length_for_sort_data而且排序字段不是Text|BLOB类型的时候,会用<br>        改进的算法—–单路排序,否则用老算法—-多路排序.<br>        1.2两种算法的数据都有可能超出sort_buffer的容量,超出之后,会创建tmp文件进行合并排序,导致多次I\O<br>        ,但是使用单路排序算法的风险会更大一些,所以要提高sort_buffer_size.</p>
+<pre><code>2.尝试提高sort_buffer_size
+    不管用那种算法,提高这个参数都会提高效率,当然,要根据系统的能力去提高,因为这个参数是针对每个进程
+    的
+3.尝试提高max_lengyh_for_-sort_data
+    提高这个参数,会增加用改进算法的概率,但是如果设的太高,数据总容量超出sort_buffer_size的概率就增大,
+    明显症状是高的磁盘I\O活动和低的处理器使用率.</code></pre>
+<p>Group by 实质是先排序后进行分组,遵照索引建的最佳左前缀<br>    当无法使用索引列,增大max_length_for_sort_data参数的设置+ 增大sort_buffer_size参数的设置<br>    where高于having,能写在where限定的条件就不要去having限定了.</p>
+<p>MySQL的慢查询日志是MySQL提供的一种日志记录,它用来记录MySQL中响应时间超过阈值的语句,具体指运行时间超过long_query_time<br>值的SQL,则会被记录到慢查询日志中.</p>
+<p>long_query_time的默认值为10,意思是运行10秒以上的语句</p>
+<p>通过慢查询日志来查看哪些SQL超过我们的最大忍耐时间值,然后通过修改慢SQL定义的阈值,结合explain进行全面分析</p>
+<p>默认情况下,MySQL数据库没有开启慢查询日志,需要我们手动来设置这个参数.<br>当然,如果不是调优需要的话,一般不建议启动该参数,因为开启慢查询日志或多或少带来一定的性能影响.慢查询日志支持将日志记录写入文件</p>
+<p>Show Profile  </p>
+<p>锁是计算机协调多个进程或线程并发访问某一资源的机制.</p>
+<p>在数据库中,除传统的计算资源(如 CPU RAM I/O等)的争用以外,数据也是一种供许多用户共享的资源.如何保证数据并发访问的一致性 有效性是所有数据库必须解决的一个问题,锁冲突也是影响数据库并发访问性能的一个重要因素.从这个角度来说,锁对 数据库而言显得尤其重要,也更加复杂.</p>
+<p>lock table mylock read,book write;</p>
+<p>MyISAm在执行查询语句(SELECT)前,会自动给涉及的所有表加读锁,在执行增删改操作之前,会自动给涉及的表加写锁.<br>MySQL的表级锁有两种模式<br>    表共享读锁(Table Read Lock)<br>    表独占写锁(Table Write Lock)</p>
+<p>1.对MyISAM表的读操作(加读锁),不会阻塞其他进程对同一表的读请求,但会阻塞对同一表的写请求.只有当2020/07/31读锁释放后,才会执行其他进程的写操作.<br>2.对MyISAM表的写操作(加写锁),会阻塞其他进程对同一表的读和写操作,只有当写锁释放后,才会执行其他进程的读写操作.<br>    简而言之:就是读锁会阻塞写,但是不会阻塞读,而写锁则会把读和写都堵塞. </p>
+<p>Myisam的读写调度是写优先,这也是myisam不适合做写为主表的引擎,因为写锁后,其他线程不能做任何操作,大量的更新会使查询很难得到锁,从而造成永远阻塞.</p>
+<p>索引失效行锁变表锁<br>   注意这里的where条件 b=4005 。要记得当前表的b字段是字符串类型，并且加了索引，加了索引之后如果查询条件没加引号会导致失效<br>    varchar 类型记得加单引号   不然 本来innodb是行锁  你操作第四行  我操作第九行 互不影响  但是因为操作varchar类型的值没有加单引号  导致行锁变表锁   另一个会话操作另外一行数据时被锁定</p>
+<p>间隙锁危害<br>  什么是间隙锁<br>    当我们用范围条件而不是相等条件检索数据,并请求共享或排他锁,innodb会给出复合条件的已有数据记录的索引项加锁;对于键值在条件范围内但不存在的记录,叫做”间隙(GAP)”,<br>    Innodb也会对这个”间隙”加锁,这种锁机制就是所谓的间隙锁(Next-Key锁).<br>  危害<br>    因为Query执行过程中通过过范围查找的话,它会锁定整个范围内所有的索引键值,即使这个键值不存在.<br>    间隙锁有一个比较致命的弱点,就是当锁定一个范围键值之后,即使某些不存在的键值也会无辜的锁定,而造成在锁定的时候无法插入锁定键值范围内的任何数据.在某些场景下这可能会对性能造成很大的危害.</p>
+<p> 如何锁定一行:<br>    begin;<br>    select * from test_innodb_lock where a = 8  for update;<br>    commit;<br>    锁定某一行后,其他操作会被阻塞,直到锁定的行提交commit.</p>
+<p>行锁总结:<br>    innodb存储引擎由于实现了行级锁定,虽然在锁定机制的方面所带来的的性能损耗可能要比表级锁定会要高一些,但是在整体并发处理能力方面要远远优于MyISAM的表级锁定的.当系统并发量较高的时候,innodb的整体性能和MyISAM相比就会有比较明显的优势了.<br>    但是,innodb的行级锁定同样也有其脆弱的一面,当我们使用不当的时候,可能会让innodb的整体性能不仅不能比MyISAM高,甚至可能会更差.</p>
+<p>行锁优化建议:<br>    尽可能让所有数据都通过索引来完成,避免无索引行锁升级为表锁.<br>    合理设计索引,尽可能缩小锁的范围<br>    尽可能较少检索条件,避免间隙锁<br>    尽量控制事务大小,减少锁定资源量和时间长度<br>    尽可能低级别事务隔离.<br>页锁:<br>    开销和加锁时间界于表锁和行锁之间,会出现思索哦;锁定粒度界于表锁和行锁之间,并发度一般.</p>
+<p>主从复制主机my,ini修改:<br>    1:两个MySQL  版本尽可能一致  一个Windows 一个Linux  同一网段  可以ping通<br>    2.1:设置主服务器唯一ID   server-id = 1<br>    2.2: 启用二进制日志<br>        log-bin = 自己本地的路径/mysqlbin<br>        log-err = 自己本地的路径/mysqlerr<br>    2.3:根目录<br>        basedir = “自己本地路径到MySQL版本即可”<br>    2.4:临时目录<br>        tmpdir = “自己本地路径到MySQL版本即可”<br>    2.5:数据目录<br>        datadir = “自己本地路径到/Data/“</p>
+<pre><code>read-only = 0;</code></pre>
+<p>主从复制从机my.cnf修改:<br>    注释掉 server-id  =1   打开 server-id  =2<br>在Windows主句上建立账户并授权给slave<br>    GRANT REPLICATION SLAVE ON <em>.</em> TO ‘zhaomo’ @’从机器数据库ip’ IDENTIFIED BY ‘123456’;<br>    flush privileges;</p>
+<p>查看主机状态:<br>    show master status;<br>    记下结果中的file和position的值<br>从机命令行:<br>    change master to master_host =’ip’,<br>    master_user=’zhaomo’<br>    master_password=’123456’<br>    master_log_file=’mysqlbin.具体数字’,master_log_pos=具体值;</p>
+<pre><code>start slave; 
+
+show slave status\G
+    需要看到:
+        Slave_IO_Running: Yes
+        Slave_SQL_Running: Yes
+第一次配置不成功的话 要在主机上重新查看    show master status; 获取最新的结果中的file和position的值</code></pre>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/03/28/SQL%E4%BC%98%E5%8C%96/" data-id="ckmslcido0000n4axdavdeodo" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2021/03/28/shell/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">shell</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/03/">三月 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/03/28/SQL%E4%BC%98%E5%8C%96/">SQL优化</a>
+          </li>
+        
+          <li>
+            <a href="/2021/03/28/shell/">shell</a>
+          </li>
+        
+          <li>
+            <a href="/2021/03/28/IDEA%E5%85%B3%E8%81%94%E4%B8%80%E5%88%87/">IDEA关联一切</a>
+          </li>
+        
+          <li>
+            <a href="/2021/03/28/DOS/">DOS</a>
+          </li>
+        
+          <li>
+            <a href="/2021/03/28/Go/">Go</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2021 SayMe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
