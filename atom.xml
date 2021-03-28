@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-03-28T03:16:34.649Z</updated>
+  <updated>2021-03-28T07:18:41.409Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>随记</title>
+    <link href="http://example.com/2021/03/28/%E9%9A%8F%E8%AE%B0/"/>
+    <id>http://example.com/2021/03/28/%E9%9A%8F%E8%AE%B0/</id>
+    <published>2021-03-28T07:18:14.000Z</published>
+    <updated>2021-03-28T07:18:41.409Z</updated>
+    
+    <content type="html"><![CDATA[<pre><code>##Docker01/07停止所有容器   docker stop $(docker ps -a -q)刪除所有容器   docker  rm $(docker ps -a -q)删除所有容器   docker ps -a -q|xargs docker rm docker rmi -f 容器id 容器id 容器id #删除多个容器docker rmi -f $(docker images -aq) #删除全部镜像Ctrl+P+Q    # 容器不停止退出    如果启动时忘了后台启动的话  docker start 容器id        docker restart 容器iddocker stop 容器iddocker kill 容器id        # 强制停止当前容器docker exec -it 89c5b9c81e74(mysql 容器id)  bashdocker exec -it 58ff53c77659 bashps -ef | grep javamvn package -Dmaven.test.skip=true</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;pre&gt;&lt;code&gt;##Docker
+01/07
+停止所有容器   docker stop $(docker ps -a -q)
+刪除所有容器   docker  rm $(docker ps -a -q)
+
+删除所有容器   docker ps -a -q|xargs doc</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>SQL优化</title>
