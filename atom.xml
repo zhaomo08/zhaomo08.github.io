@@ -37,11 +37,11 @@
   </entry>
   
   <entry>
-    <title>277</title>
-    <link href="http://example.com/2021/04/25/0425/"/>
-    <id>http://example.com/2021/04/25/0425/</id>
+    <title>Some</title>
+    <link href="http://example.com/2021/04/25/Some/"/>
+    <id>http://example.com/2021/04/25/Some/</id>
     <published>2021-04-24T16:10:33.000Z</published>
-    <updated>2021-04-26T16:38:05.176Z</updated>
+    <updated>2021-04-26T16:47:58.779Z</updated>
     
     <content type="html"><![CDATA[<h4 id="级联删除"><a href="#级联删除" class="headerlink" title="级联删除"></a>级联删除</h4><p>解决方案一:触发器</p><p>​        注意使用触发器实现是将业务绑定到了数据库端,在进行系统设计时要确认方案</p><p>解决方案二: 业务层删除操作分别调用两个模块的删除功能</p><p>​        注意删除主使用ID删除,删除从使用按关联ID 删除</p><p>​        注意删除的顺序,先删从,后删主</p><p>解决方案三: 存储过程</p><p>​        整套的疏忽层解决方案,没有单一功能使用的.</p><p>解决方案四: 依赖框架提供得到级联删除功能</p><p>解决方案五:  定时维护/垃圾数据清理</p><h4 id="String"><a href="#String" class="headerlink" title="String"></a>String</h4><p>String    final 修饰不可变长度<br>StringBuffer    1.0   线程安全(同步)<br>Stringbuilder   1.5 线程不安全</p><p>SQL拼接语句内容较少   用String即可<br>如果语句内容很多   应该使用StringBuillder</p><h4 id="解决中文乱码的一个思路"><a href="#解决中文乱码的一个思路" class="headerlink" title="解决中文乱码的一个思路"></a>解决中文乱码的一个思路</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String fileName = <span class="keyword">new</span> String(<span class="string">&quot;测试文件名.xlsx&quot;</span>.getBytes(),<span class="string">&quot;iso8859-1&quot;</span>);</span><br><span class="line">然后再传fileName 过去</span><br></pre></td></tr></table></figure><h4 id="权限系统是一种设定用户与可操作模块之间关系的系统"><a href="#权限系统是一种设定用户与可操作模块之间关系的系统" class="headerlink" title="权限系统是一种设定用户与可操作模块之间关系的系统"></a>权限系统是一种设定用户与可操作模块之间关系的系统</h4><p>通过设定用户与可操作性的模块之间的关系,控制用户在可指定范围进行业务执行</p><p>基于用户的权限控制(UBAC: User-Based Access Control)</p><p>基于角色的权限控制(RBAC :Role-Based Access Control)</p><h4 id="TCP发送数据如何设置发送多大数据"><a href="#TCP发送数据如何设置发送多大数据" class="headerlink" title="TCP发送数据如何设置发送多大数据?"></a>TCP发送数据如何设置发送多大数据?</h4><p>如果数据拆包发送如何保证数据顺序?</p><p>​    根据接收到的Seq和ACK,将发送和接收的数据进行排序’</p><p>无论是Seq还是ACK,都是针对”对方”而言的.是<strong>对方发送的数据和对方接收到的数据</strong></p>]]></content>
     
