@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2021-04-26T16:45:37.773Z</updated>
+  <updated>2021-06-14T09:02:34.132Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>HashMap和HashTable</title>
+    <link href="http://example.com/2021/06/14/HashMap%E5%92%8CHashTable/"/>
+    <id>http://example.com/2021/06/14/HashMap%E5%92%8CHashTable/</id>
+    <published>2021-06-14T09:01:51.000Z</published>
+    <updated>2021-06-14T09:02:34.132Z</updated>
+    
+    <content type="html"><![CDATA[<p>考察目标:</p><ul><li>集合体系结构是否熟悉</li><li>JDk版本更新是否了解</li></ul><p>题目分析:</p><ul><li>相同点<ul><li>都是双列集合,一个键对应一个值</li><li>都是键不能重复,但是值可以重复</li></ul></li><li>不同点<ul><li>出现版本的区别<ul><li>HashMap是 JDK 1.2 版本出现的</li><li>HashTable是JDK1.0版本出现的</li></ul></li><li>线程同步的区别<ul><li>HashMap是线程不同步的</li><li>HashTable是线程同步的</li></ul></li><li>存储数据的区别<ul><li>HashMap可以存储null键和null值</li><li>HashTable不可以存储null键和null值</li></ul></li></ul></li></ul><h4 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h4><ul><li>双列集合优先使用HashMap集合</li><li>如果是在多线程场景下,也无需使用HashTable集合,我们可以使用ConcurrentHashMap集合,这个是线程同步的.</li><li>HashTable 集合虽然使用不多,但是它有一个给力的子类,Properties集合还在大量使用中,一般配合IO流来加载配置文件.</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;考察目标:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;集合体系结构是否熟悉&lt;/li&gt;
+&lt;li&gt;JDk版本更新是否了解&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;题目分析:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;相同点&lt;ul&gt;
+&lt;li&gt;都是双列集合,一个键对应一个值&lt;/li&gt;
+&lt;li&gt;都是键不能重复,但是值可以重复&lt;</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>hexo使用笔记</title>
